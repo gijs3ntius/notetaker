@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import Textarea from "react-textarea-autosize";
+hangedimport React, {Component} from 'react';
+// import Textarea from "react-textarea-autosize";
 
 class TextEditor extends Component {
 	constructor(props) {
@@ -13,11 +13,10 @@ class TextEditor extends Component {
 				<TextSubmitTool name="Section"/>
 				<TextSubmitTool name="Subsection"/>
 				<TextAreaSubmitTool name="Text"/>
+				<button type="submit" className="btn btn-primary">Add</button>
 			</div> 
 		);
 	}
-
-
 }
 
 class TextSubmitTool extends Component {
@@ -27,13 +26,19 @@ class TextSubmitTool extends Component {
 
 	render() {
 		return (
-			<div className="form-group">
-				<label>{this.props.name}</label>
-				<input type="text" className="form-control" placeholder={"Enter "+this.props.name}/>
+			<div className="row">
+        		<div className="input-field col s12">
+          			<input id={this.props.name} type="text" className="validate"/>
+          			<label htmlFor={this.props.name}>{this.props.name}</label>
+        		</div>
 			</div>
 		);
 	}
 }
+
+var textareaStyle = {
+	width: '100%',
+};
 
 class TextAreaSubmitTool extends Component {
 	constructor(props) {
@@ -42,9 +47,11 @@ class TextAreaSubmitTool extends Component {
 
 	render() {
 		return (
-			<div className="form-group">
-				<label>{this.props.name}</label>
-				<Textarea />
+			<div className="row">
+				<div className="input-field col s12">
+					<textarea id={this.props.name} className="materialize-textarea"></textarea>
+					<label htmlFor={this.props.name}>{this.props.name}</label>
+			  	</div>
 			</div>
 		);
 	}

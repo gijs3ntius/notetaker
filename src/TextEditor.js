@@ -85,7 +85,7 @@ class TextEditor extends Component {
 
 	render() { // renders the text editor part of the application
 		return (
-			<div className="textEditor">
+			<div className="textEditor" style={{display: "inline"}}>
 				<form onSubmit={this.handleSubmit}>
 					<TextSubmitTool name="Chapter" onChange={this.onChange} value={this.state.currentTextItems["Chapter"]}/>
 					<TextSubmitTool name="Section" onChange={this.onChange} value={this.state.currentTextItems["Section"]}/>

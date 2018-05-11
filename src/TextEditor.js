@@ -1,29 +1,29 @@
 import React, {Component} from 'react';
+import './common.css';
 
-// TODO undo/redo system with everything added with the add button 
-// text editor creates strings with markup language or just a list which could be easier
-// markup language: <ch> = chapter, <s> = section, <sx> = subsection, <h> = heading, <t> = text 
 class TextEditor extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			// documentString: '', // the string with all text items not yet used
 			itemStack: [], // a stack with all the items added to the screen
-			currentTextItems: {
+			currentTextItems: { // a object holding the current items not added to the screen
 				Chapter: '',
 				Section: '',
 				SubSection: '',
 				Text: '',
-			}, // a object holding the current items not added to the screen
+			},
+			itemsCountPushed: [],
 		}
 		this.onChange = this.onChange.bind(this); // used to bind functions
 		this.handleSubmit = this.handleSubmit.bind(this);
+		this.undoLastOperation = this.undoLastOperation.bind(this);
 	}
 
 	handleSubmit(event) {
 		event.preventDefault(); // to prevent the default behaviour of the form
-		// add items from current tex items to itemstack
 		let copiedTextStack = this.state.itemStack.slice();
+		let copiedItemsCountPushed = this.state.itemsCountPushed.slice();
+		let itemCount = 0;
 		for (let key in this.state.currentTextItems) {
 			if (this.state.currentTextItems[key] !== '') {
 				copiedTextStack.push(
@@ -32,17 +32,20 @@ class TextEditor extends Component {
 						value: this.state.currentTextItems[key]
 					}
 				); // the order is really important therefore that has te be fixed
+				itemCount++;
 			}
 		}
+		copiedItemsCountPushed.push(itemCount);
 		this.setState(
 			{
-				currentTextItems: {
+				currentTextItems: { // empty the current text item object
 					Chapter: '',
 					Section: '',
 					SubSection: '',
 					Text: '',
-				}, // empty the current text item object
+				},
 				itemStack: copiedTextStack,
+				itemsCountPushed: copiedItemsCountPushed,
 			}
 		);
 		// this.props.updateView(this.state.itemStack); // in the future used to update the view
@@ -64,15 +67,20 @@ class TextEditor extends Component {
 		this.addItemToState(value, type); // add item to the object or adjust it
 	}
 
-	// TODO make a real undo instead of simply removing the last element 
 	undoLastOperation() {
 		let copiedTextStack = this.state.itemStack.slice(); // get a copy of an array by slice()
-		copiedTextStack.pop();
+		let copiedItemsCountPushed = this.state.itemsCountPushed.slice();
+		let itemCount = copiedItemsCountPushed.pop()
+		for(let i=0;i<itemCount;i++) {
+			copiedTextStack.pop();
+		} 
 		this.setState(
 			{
 				itemStack: copiedTextStack,
+				itemsCountPushed: copiedItemsCountPushed,
 			}
 		);
+		// this.props.updateView(this.state.itemStack); // in the future used to update the view
 	}
 
 	render() { // renders the text editor part of the application
@@ -83,7 +91,11 @@ class TextEditor extends Component {
 					<TextSubmitTool name="Section" onChange={this.onChange} value={this.state.currentTextItems["Section"]}/>
 					<TextSubmitTool name="SubSection" onChange={this.onChange} value={this.state.currentTextItems["SubSection"]}/>
 					<TextAreaSubmitTool name="Text" onChange={this.onChange} value={this.state.currentTextItems["Text"]}/>
-					<button type="submit" className="col s3 btn btn-primary">Add</button>
+					<button type="submit" className="col s3 btn btn-primary">
+						<i className="material-icons">add</i>
+					</button>
+					<div className="col s1" style={{display: "inline"}}> </div> 
+					<a className="waves-effect waves-light btn" onClick={this.undoLastOperation}><i className="material-icons">undo</i></a>
 				</form> 
 			</div>
 		);
